@@ -1,0 +1,7 @@
+{
+  "commandDescription": "runs an SFDX REPL",
+  "eDescription": "command to be executed",
+  "notConnectedPrompt": "(not connected)"
+}
+
+    
