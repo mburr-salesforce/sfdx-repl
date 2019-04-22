@@ -2,7 +2,7 @@
   "name": "sfdx-repl",
   "description": "a simple REPL for the Salesforce CLI (Salesforce DX)",
   "version": "0.0.0",
-  "author": "Mike Burr @mburr-salesforce",
+  "author": "Mike Burr @mikeburr",
   "bugs": "https://github.com/mburr-salesforce/sfdx-repl/issues",
   "dependencies": {
     "@oclif/command": "1",
@@ -45,8 +45,8 @@
   "oclif": {
     "commands": "./lib/commands",
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
+      "repl": {
+        "description": "Commands to run an SFDX REPL."
       }
     },
     "devPlugins": [

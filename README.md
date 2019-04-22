@@ -22,7 +22,7 @@ $ npm install -g sfdx-repl
 $ sfdx-repl COMMAND
 running command...
 $ sfdx-repl (-v|--version|version)
-sfdx-repl/0.0.0 darwin-x64 node-v8.15.1
+sfdx-repl/0.0.0 darwin-x64 node-v11.12.0
 $ sfdx-repl --help [COMMAND]
 USAGE
   $ sfdx-repl COMMAND
@@ -30,76 +30,56 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`sfdx-repl hello:org [FILE]`](#sfdx-repl-helloorg-file)
-* [`sfdx-repl repl:repl`](#sfdx-repl-replrepl)
-* [`sfdx-repl repl:script`](#sfdx-repl-replscript)
+* [`sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#sfdx-repl-replrepl--e-string---help-help--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
+* [`sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#sfdx-repl-replscript--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
 
-## `sfdx-repl hello:org [FILE]`
-
-print a greeting and your org IDs
-
-```
-USAGE
-  $ sfdx-repl hello:org [FILE]
-
-OPTIONS
-  -f, --force                                      example boolean flag
-  -n, --name=name                                  name to print
-  -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
-  -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
-  --apiversion=apiversion                          override the api version used for api requests made by this command
-  --json                                           format output as json
-  --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
-
-EXAMPLES
-  $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
-     Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-     My hub org id is: 00Dxx000000001234
-  
-  $ sfdx hello:org --name myname --targetusername myOrg@example.com
-     Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-```
-
-_See code: [src/commands/hello/org.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.0/src/commands/hello/org.ts)_
-
-## `sfdx-repl repl:repl`
+## `sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
 
 runs an SFDX REPL
 
 ```
 USAGE
-  $ sfdx-repl repl:repl
+  $ sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] 
+  [--loglevel trace|debug|info|warn|error|fatal]
 
 OPTIONS
   -e, --execute=execute                            command to be executed
   -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
   -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
   --apiversion=apiversion                          override the api version used for api requests made by this command
+  --help                                           show CLI help
   --json                                           format output as json
-  --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
+  --loglevel=(trace|debug|info|warn|error|fatal)   [default: warn] logging level for this command invocation
 
 EXAMPLES
   $ sfdx repl:repl --targetusername me@example.com
   me@example.com> 
-    
+
   $ sfdx repl:repl -e "1 + 2"
   3
+
+  Note that many interactions with Salesforce will return JavaScript Promises, which
+  can be difficult to work with in an interactive environment. Use --experimental-repl-await
+  to make things a bit easier:
+
+  $ NODE_OPTIONS=--experimental-repl-await sfdx repl:repl -u me@example.com
+  me@example.com> (await $conn.identity()).username
+  'me@example.com'
 ```
 
 _See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.0/src/commands/repl/repl.ts)_
 
-## `sfdx-repl repl:script`
+## `sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
 
 ```
 USAGE
-  $ sfdx-repl repl:script
+  $ sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]
 
 OPTIONS
-  -u, --targetusername=targetusername              username or alias for the target org; overrides default target org
-  -v, --targetdevhubusername=targetdevhubusername  username or alias for the dev hub org; overrides default dev hub org
-  --apiversion=apiversion                          override the api version used for api requests made by this command
-  --json                                           format output as json
-  --loglevel=(trace|debug|info|warn|error|fatal)   logging level for this command invocation
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+  --json                                          format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal)  [default: warn] logging level for this command invocation
 ```
 
 _See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.0/src/commands/repl/script.ts)_

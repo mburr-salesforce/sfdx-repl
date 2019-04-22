@@ -13,10 +13,18 @@ export default class Repl extends SfdxCommand {
   public static examples = [
     `$ sfdx repl:repl --targetusername me@example.com
 me@example.com> 
-    `,
+`,
     `$ sfdx repl:repl -e "1 + 2"
 3
-    `
+`,
+    `Note that many interactions with Salesforce will return JavaScript Promises, which
+can be difficult to work with in an interactive environment. Use --experimental-repl-await
+to make things a bit easier:
+`,
+    `$ NODE_OPTIONS=--experimental-repl-await sfdx repl:repl -u me@example.com
+me@example.com> (await $conn.identity()).username
+'me@example.com'
+`
   ];
 
   protected static supportsUsername = true;
@@ -26,13 +34,16 @@ me@example.com>
     execute: flags.string({
       char: 'e',
       description: messages.getMessage('eDescription'),
-    })
+    }),
+    help: flags.help({})
   }
 
 
   public async run(): Promise<any> { // tslint:disable-line:no-any
+
     const repl = require('repl');
     let replServer;
+
 
     // execute any commands supplied with -e flag
     if (this.flags.execute) {
@@ -48,15 +59,18 @@ me@example.com>
     // no commands supplied, start interactive mode
     else {  
       const username = this.org ? this.org.getUsername() : messages.getMessage("notConnectedPrompt");
-      replServer = repl.start(`${username}> `);
+      replServer = repl.start({ prompt: `${username}> ` });
     }
 
-    const conn = this.org && this.org.getConnection();
-    replServer.context.conn = conn;
-    replServer.context.replServer = replServer;
 
-    return new Promise<any>((resolve, reject) => {
-      replServer.on('exit', () => { resolve(replServer.context._); });
+    // some shortcuts
+    replServer.context.$org = this.org;
+    replServer.context.$conn = this.org && this.org.getConnection();
+
+
+    // keep the command running until the replServer exits
+    return new Promise<any>((resolve) => {
+      replServer.on('exit', () => resolve(replServer.context._))
     });
   }
 }
