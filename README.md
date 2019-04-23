@@ -18,29 +18,28 @@ a simple REPL for the Salesforce CLI (Salesforce DX)
 <!-- install -->
 <!-- usage -->
 ```sh-session
-$ npm install -g sfdx-repl
-$ sfdx-repl COMMAND
+$ npm install -g @mikeburr/sfdx-repl
+$ @mikeburr/sfdx-repl COMMAND
 running command...
-$ sfdx-repl (-v|--version|version)
-sfdx-repl/0.0.0 darwin-x64 node-v11.12.0
-$ sfdx-repl --help [COMMAND]
+$ @mikeburr/sfdx-repl (-v|--version|version)
+@mikeburr/sfdx-repl/0.0.1 darwin-x64 node-v11.12.0
+$ @mikeburr/sfdx-repl --help [COMMAND]
 USAGE
-  $ sfdx-repl COMMAND
+  $ @mikeburr/sfdx-repl COMMAND
 ...
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#sfdx-repl-replrepl--e-string---help-help--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
-* [`sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#sfdx-repl-replscript--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
+* [`@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#mikeburrsfdx-repl-replrepl--e-string---help-help--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
 
-## `sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
+## `@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
 
 runs an SFDX REPL
 
 ```
 USAGE
-  $ sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] 
-  [--loglevel trace|debug|info|warn|error|fatal]
+  $ @mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] 
+  [--json] [--loglevel trace|debug|info|warn|error|fatal]
 
 OPTIONS
   -e, --execute=execute                            command to be executed
@@ -67,22 +66,7 @@ EXAMPLES
   'me@example.com'
 ```
 
-_See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.0/src/commands/repl/repl.ts)_
-
-## `sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
-
-```
-USAGE
-  $ sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]
-
-OPTIONS
-  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
-  --apiversion=apiversion                         override the api version used for api requests made by this command
-  --json                                          format output as json
-  --loglevel=(trace|debug|info|warn|error|fatal)  [default: warn] logging level for this command invocation
-```
-
-_See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.0/src/commands/repl/script.ts)_
+_See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.1/src/commands/repl/repl.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
