@@ -4,7 +4,7 @@ import { SfdxCommand, core, flags } from '@salesforce/command';
 core.Messages.importMessagesDirectory(__dirname);
 
 // initialize Messages with the current plugin directory
-const messages = core.Messages.loadMessages('sfdx-repl', 'repl');
+const messages = core.Messages.loadMessages('@mikeburr/sfdx-repl', 'repl');
 
 export default class Repl extends SfdxCommand {
 
