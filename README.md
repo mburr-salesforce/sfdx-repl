@@ -31,6 +31,7 @@ USAGE
 <!-- usagestop -->
 <!-- commands -->
 * [`@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#mikeburrsfdx-repl-replrepl--e-string---help-help--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
+* [`@mikeburr/sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`](#mikeburrsfdx-repl-replscript--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfatal)
 
 ## `@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
 
@@ -67,6 +68,22 @@ EXAMPLES
 ```
 
 _See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.1/src/commands/repl/repl.ts)_
+
+## `@mikeburr/sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
+
+```
+USAGE
+  $ @mikeburr/sfdx-repl repl:script [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal]
+
+OPTIONS
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+  --json                                          format output as json
+  --loglevel=(trace|debug|info|warn|error|fatal)  [default: warn] logging level for this command invocation
+```
+
+_See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.1/src/commands/repl/script.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
