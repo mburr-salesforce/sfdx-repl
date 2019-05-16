@@ -1,9 +1,7 @@
 import { SfdxCommand, core, flags } from '@salesforce/command';
 
-// Initialize Messages with the current plugin directory
-core.Messages.importMessagesDirectory(__dirname);
-
 // initialize Messages with the current plugin directory
+core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@mikeburr/sfdx-repl', 'repl');
 
 export default class Repl extends SfdxCommand {
@@ -64,13 +62,14 @@ me@example.com> (await $conn.identity()).username
 
 
     // some shortcuts
-    replServer.context.$org = this.org;
+    replServer.context.$cmd = this;
     replServer.context.$conn = this.org && this.org.getConnection();
+    replServer.context.$org = this.org;
 
 
     // keep the command running until the replServer exits
     return new Promise<any>((resolve) => {
-      replServer.on('exit', () => resolve(replServer.context._))
+      replServer.on('exit', () => resolve(replServer.context._));
     });
   }
 }
