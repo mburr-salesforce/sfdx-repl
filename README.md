@@ -22,7 +22,7 @@ $ npm install -g @mikeburr/sfdx-repl
 $ @mikeburr/sfdx-repl COMMAND
 running command...
 $ @mikeburr/sfdx-repl (-v|--version|version)
-@mikeburr/sfdx-repl/0.0.1 darwin-x64 node-v11.12.0
+@mikeburr/sfdx-repl/0.1.0 darwin-x64 node-v11.12.0
 $ @mikeburr/sfdx-repl --help [COMMAND]
 USAGE
   $ @mikeburr/sfdx-repl COMMAND
@@ -67,7 +67,7 @@ EXAMPLES
   'me@example.com'
 ```
 
-_See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.1/src/commands/repl/repl.ts)_
+_See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.1.0/src/commands/repl/repl.ts)_
 
 ## `@mikeburr/sfdx-repl repl:script [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal]`
 
@@ -104,7 +104,7 @@ EXAMPLES
   'me@example.com'
 ```
 
-_See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.0.1/src/commands/repl/script.ts)_
+_See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.1.0/src/commands/repl/script.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
