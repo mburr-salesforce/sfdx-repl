@@ -1,7 +1,7 @@
 {
   "name": "@mikeburr/sfdx-repl",
   "description": "a simple REPL for the Salesforce CLI (Salesforce DX)",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Mike Burr @mikeburr",
   "bugs": "https://github.com/mburr-salesforce/sfdx-repl/issues",
   "dependencies": {
@@ -19,7 +19,7 @@
     "@salesforce/dev-config": "^1.1.4",
     "@types/chai": "^4",
     "@types/mocha": "^5",
-    "@types/node": "^10",
+    "@types/node": "10",
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
