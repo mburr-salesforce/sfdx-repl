@@ -5,47 +5,19 @@ core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages('@mikeburr/sfdx-repl', 'script');
 
 const fs = require('fs');
-const repl = require('repl');
-const { Transform, Writable } = require('stream');
-
-
-// a simple transform stream that strips out the #! line at the start of a script
-const stripShebang = new Transform({
-  transform(chunk, encoding, callback) {
-    const s = chunk.toString();
-
-    // strip off the opening #! line
-    // NB this will fail if the initial chunk does not contain the full shebang line
-    if (this.checkShebang === undefined && s.startsWith("#!")) {
-      this.push(s.replace(/^#![^\n]*\n/, ''));
-    }
-    else {
-      this.push(chunk);
-    }
-
-    this.checkShebang = false;
-    callback();
-  }
-});
-
 
 export default class Script extends SfdxCommand {
 
   public static description = messages.getMessage('commandDescription');
   public static examples = [
-    `$ sfdx repl:repl --targetusername me@example.com
-me@example.com> 
+    `$ cat example.sfdx
+#!/usr/bin/env sfdx repl:script
+
+let me = await $conn.identity();
+$cmd.ux.log(me.username + ' ran the example!');
 `,
-    `$ sfdx repl:repl -e "1 + 2"
-3
-`,
-    `Note that many interactions with Salesforce will return JavaScript Promises, which
-can be difficult to work with in an interactive environment. Use --experimental-repl-await
-to make things a bit easier:
-`,
-    `$ NODE_OPTIONS=--experimental-repl-await sfdx repl:repl -u me@example.com
-me@example.com> (await $conn.identity()).username
-'me@example.com'
+    `$ ./example.sfdx --targetusername me@example.com
+me@example.com ran the example!
 `
   ];
 
@@ -70,41 +42,31 @@ me@example.com> (await $conn.identity()).username
   public async run(): Promise<any> { // tslint:disable-line:no-any
 
     // sfdx doesn't do variable length arguments so we drop back to oclif's parsing
-    debugger;
     const { args, argv } = this.parse(Script);
-    // console.log(`args: ${JSON.stringify(args)}, argv: ${argv}`);
 
-    // we cannot replace process.argv as that messes with SFDX, so we put the script's
-    // args in process.scriptArgv
+    // temporarily swap sfdx's argv for the script's; note that very bad things happen if
+    // don't swap these back before we return
+    // TODO - would it make more sense to pass the args to the script as function parameters?
     let originalArgv = process.argv;
     process.argv = argv;
 
     try {
-      // read the specified script but strip off the #! line since it isn't legal javascript
-      const script = fs.createReadStream(args.script).pipe(stripShebang);
+      return new Promise((resolve) => {
+        fs.readFile(args.script, (err, data) => {
+          // strip off the shebang line since it's not valid javascript
+          data = data.toString().replace(/^#![^\n]*\n/, '');
 
-      // suppress all the output from the repl itself (prompts, command results, etc.); note
-      // that this does not affect data written with console.xyz or oclif's log/warn/error
-      // functions
-      let nullOutputStream = new Writable({
-        objectMode: true,
-        write: ((data, _, done) => done())
-      });
+          // build a new async function with the contents of the script; we pass in
+          // various bits of context so the script can access them the same way as repl
+          const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+          const runme = new AsyncFunction('require', '$cmd', '$conn', '$org', data);
 
-      // build a repl to parse the script
-      const replServer = repl.start({ prompt: '', input: script, output: nullOutputStream,
-                                      ignoreOutput: true});
-
-      // some shortcuts
-      replServer.context.$cmd = this;
-      replServer.context.$conn = this.org && this.org.getConnection();
-      replServer.context.$org = this.org;
-
-      // keep the command running until the replServer exits
-      return await new Promise<any>((resolve) => {
-        replServer.on('exit', () => resolve(replServer.context._));
+          // return a Promise that resolves to the script's return value
+          resolve(runme(require, this, this.org && this.org.getConnection(), this.org));
+        });
       });
     }
+
     finally {
       process.argv = originalArgv;
     }
