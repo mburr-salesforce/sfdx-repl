@@ -10,7 +10,11 @@ export default class Repl extends SfdxCommand {
 
   public static examples = [
     `$ sfdx repl:repl --targetusername me@example.com
-me@example.com> 
+me@example.com> Math.sqrt(289)
+17
+me@example.com> $conn.identity().then(id => console.log('*** you are logged into Salesforce as: ' + id.username))
+Promise { _40: 0, _65: 0, _55: null, _72: null }
+me@example.com> *** you are logged into Salesforce as: me@example.com
 `,
     `$ sfdx repl:repl -e "1 + 2"
 3
