@@ -22,7 +22,7 @@ $ npm install -g @mikeburr/sfdx-repl
 $ @mikeburr/sfdx-repl COMMAND
 running command...
 $ @mikeburr/sfdx-repl (-v|--version|version)
-@mikeburr/sfdx-repl/0.2.0 darwin-x64 node-v12.7.0
+@mikeburr/sfdx-repl/0.2.0 darwin-x64 node-v10.16.3
 $ @mikeburr/sfdx-repl --help [COMMAND]
 USAGE
   $ @mikeburr/sfdx-repl COMMAND

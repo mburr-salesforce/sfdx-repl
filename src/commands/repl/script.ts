@@ -59,10 +59,16 @@ me@example.com ran the example!
           // build a new async function with the contents of the script; we pass in
           // various bits of context so the script can access them the same way as repl
           const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
-          const runme = new AsyncFunction('require', '$cmd', '$conn', '$org', data);
+          const runme = new AsyncFunction(data);
+
+          // set relevant global variables to prevent excessive passing around of variables
+          global['require'] = require;
+          global['$cmd'] = this;
+          global['$org'] = this.org;
+          global['$conn'] = this.org && this.org.getConnection();
 
           // return a Promise that resolves to the script's return value
-          resolve(runme(require, this, this.org && this.org.getConnection(), this.org));
+          resolve(runme());
         });
       });
     }
