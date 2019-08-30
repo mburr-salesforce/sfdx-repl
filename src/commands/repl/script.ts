@@ -61,7 +61,8 @@ me@example.com ran the example!
           const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
           const runme = new AsyncFunction(data);
 
-          // set relevant global variables to prevent excessive passing around of variables
+          // attach relevant globals to the global object so they are available
+          // throughout entirety of script execution
           global['require'] = require;
           global['$cmd'] = this;
           global['$org'] = this.org;
