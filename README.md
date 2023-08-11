@@ -1,149 +1,147 @@
-sfdx-repl
-=========
+**NOTE: This template for sf plugins is not yet official. Please consult with the Platform CLI team before using this template.**
 
-a simple REPL for the Salesforce CLI (Salesforce DX)
+# plugin-foo
 
-[![Version](https://img.shields.io/npm/v/sfdx-repl.svg)](https://npmjs.org/package/sfdx-repl)
-[![CircleCI](https://circleci.com/gh/mburr-salesforce/sfdx-repl/tree/master.svg?style=shield)](https://circleci.com/gh/mburr-salesforce/sfdx-repl/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/mburr-salesforce/sfdx-repl?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/sfdx-repl/branch/master)
-[![Codecov](https://codecov.io/gh/mburr-salesforce/sfdx-repl/branch/master/graph/badge.svg)](https://codecov.io/gh/mburr-salesforce/sfdx-repl)
-[![Greenkeeper](https://badges.greenkeeper.io/mburr-salesforce/sfdx-repl.svg)](https://greenkeeper.io/)
-[![Known Vulnerabilities](https://snyk.io/test/github/mburr-salesforce/sfdx-repl/badge.svg)](https://snyk.io/test/github/mburr-salesforce/sfdx-repl)
-[![Downloads/week](https://img.shields.io/npm/dw/sfdx-repl.svg)](https://npmjs.org/package/sfdx-repl)
-[![License](https://img.shields.io/npm/l/sfdx-repl.svg)](https://github.com/mburr-salesforce/sfdx-repl/blob/master/package.json)
+[![NPM](https://img.shields.io/npm/v/@salesforce/plugin-foo.svg?label=@salesforce/plugin-foo)](https://www.npmjs.com/package/@salesforce/plugin-foo) [![Downloads/week](https://img.shields.io/npm/dw/@salesforce/plugin-foo.svg)](https://npmjs.org/package/@salesforce/plugin-foo) [![License](https://img.shields.io/badge/License-BSD%203--Clause-brightgreen.svg)](https://raw.githubusercontent.com/salesforcecli/plugin-foo/main/LICENSE.txt)
 
-<!-- toc -->
-* [Debugging your plugin](#debugging-your-plugin)
-<!-- tocstop -->
-<!-- install -->
-<!-- usage -->
-```sh-session
-$ npm install -g @mikeburr/sfdx-repl
-$ @mikeburr/sfdx-repl COMMAND
-running command...
-$ @mikeburr/sfdx-repl (-v|--version|version)
-@mikeburr/sfdx-repl/0.3.0 darwin-x64 node-v12.7.0
-$ @mikeburr/sfdx-repl --help [COMMAND]
-USAGE
-  $ @mikeburr/sfdx-repl COMMAND
-...
+## Using the template
+
+This repository provides a template for creating a plugin for the Salesforce CLI. To convert this template to a working plugin:
+
+1. Please get in touch with the Platform CLI team. We want to help you develop your plugin.
+2. Generate your plugin:
+
+   ```
+   sf plugins install dev
+   sf dev generate plugin
+
+   git init -b main
+   git add . && git commit -m "chore: initial commit"
+   ```
+
+3. Create your plugin's repo in the salesforcecli github org
+4. When you're ready, replace the contents of this README with the information you want.
+
+## Learn about `sf` plugins
+
+Salesforce CLI plugins are based on the [oclif plugin framework](<(https://oclif.io/docs/introduction.html)>). Read the [plugin developer guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_architecture_sf_cli.htm) to learn about Salesforce CLI plugin development.
+
+This repository contains a lot of additional scripts and tools to help with general Salesforce node development and enforce coding standards. You should familiarize yourself with some of the [node developer packages](#tooling) used by Salesforce. There is also a default circleci config using the [release management orb](https://github.com/forcedotcom/npm-release-management-orb) standards.
+
+Additionally, there are some additional tests that the Salesforce CLI will enforce if this plugin is ever bundled with the CLI. These test are included by default under the `posttest` script and it is required to keep these tests active in your plugin if you plan to have it bundled.
+
+### Tooling
+
+- [@salesforce/core](https://github.com/forcedotcom/sfdx-core)
+- [@salesforce/kit](https://github.com/forcedotcom/kit)
+- [@salesforce/sf-plugins-core](https://github.com/salesforcecli/sf-plugins-core)
+- [@salesforce/ts-types](https://github.com/forcedotcom/ts-types)
+- [@salesforce/ts-sinon](https://github.com/forcedotcom/ts-sinon)
+- [@salesforce/dev-config](https://github.com/forcedotcom/dev-config)
+- [@salesforce/dev-scripts](https://github.com/forcedotcom/dev-scripts)
+
+### Hooks
+
+For cross clouds commands, e.g. `sf env list`, we utilize [oclif hooks](https://oclif.io/docs/hooks) to get the relevant information from installed plugins.
+
+This plugin includes sample hooks in the [src/hooks directory](src/hooks). You'll just need to add the appropriate logic. You can also delete any of the hooks if they aren't required for your plugin.
+
+# Everything past here is only a suggestion as to what should be in your specific plugin's description
+
+This plugin is bundled with the [Salesforce CLI](https://developer.salesforce.com/tools/sfdxcli). For more information on the CLI, read the [getting started guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm).
+
+We always recommend using the latest version of these commands bundled with the CLI, however, you can install a specific version or tag if needed.
+
+## Install
+
+```bash
+sf plugins install @salesforce/plugin-foo@x.y.z
 ```
-<!-- usagestop -->
+
+## Issues
+
+Please report any issues at https://github.com/forcedotcom/cli/issues
+
+## Contributing
+
+1. Please read our [Code of Conduct](CODE_OF_CONDUCT.md)
+2. Create a new issue before starting your project so that we can keep track of
+   what you are trying to add/fix. That way, we can also offer suggestions or
+   let you know if there is already an effort in progress.
+3. Fork this repository.
+4. [Build the plugin locally](#build)
+5. Create a _topic_ branch in your fork. Note, this step is recommended but technically not required if contributing using a fork.
+6. Edit the code in your fork.
+7. Write appropriate tests for your changes. Try to achieve at least 95% code coverage on any new code. No pull request will be accepted without unit tests.
+8. Sign CLA (see [CLA](#cla) below).
+9. Send us a pull request when you are done. We'll review your code, suggest any needed changes, and merge it in.
+
+### CLA
+
+External contributors will be required to sign a Contributor's License
+Agreement. You can do so by going to https://cla.salesforce.com/sign-cla.
+
+### Build
+
+To build the plugin locally, make sure to have yarn installed and run the following commands:
+
+```bash
+# Clone the repository
+git clone git@github.com:salesforcecli/plugin-foo
+
+# Install the dependencies and compile
+yarn && yarn build
+```
+
+To use your plugin, run using the local `./bin/dev` or `./bin/dev.cmd` file.
+
+```bash
+# Run using local run file.
+./bin/dev hello world
+```
+
+There should be no differences when running via the Salesforce CLI or using the local run file. However, it can be useful to link the plugin to do some additional testing or run your commands from anywhere on your machine.
+
+```bash
+# Link your plugin to the sf cli
+sf plugins link .
+# To verify
+sf plugins
+```
+
+## Commands
+
 <!-- commands -->
-* [`@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#mikeburrsfdx-repl-replrepl--e-string---help-help--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`@mikeburr/sfdx-repl repl:script [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#mikeburrsfdx-repl-replscript--v-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
-## `@mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+- [`sf hello world`](#sf-hello-world)
 
-runs an SFDX REPL
+## `sf hello world`
 
-```
-USAGE
-  $ @mikeburr/sfdx-repl repl:repl [-e <string>] [--help <help>] [-v <string>] [-u <string>] [--apiversion <string>] 
-  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
-
-OPTIONS
-  -e, --execute=execute                                                             command to be executed
-
-  -u, --targetusername=targetusername                                               username or alias for the target
-                                                                                    org; overrides default target org
-
-  -v, --targetdevhubusername=targetdevhubusername                                   username or alias for the dev hub
-                                                                                    org; overrides default dev hub org
-
-  --apiversion=apiversion                                                           override the api version used for
-                                                                                    api requests made by this command
-
-  --help                                                                            show CLI help
-
-  --json                                                                            format output as json
-
-  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
-                                                                                    this command invocation
-
-EXAMPLES
-  $ sfdx repl:repl --targetusername me@example.com
-  me@example.com> Math.sqrt(289)
-  17
-  me@example.com> $conn.identity().then(id => console.log('*** you are logged into Salesforce as: ' + id.username))
-  Promise { _40: 0, _65: 0, _55: null, _72: null }
-  me@example.com> *** you are logged into Salesforce as: me@example.com
-
-  $ sfdx repl:repl -e "1 + 2"
-  3
-
-  Note that many interactions with Salesforce will return JavaScript Promises, which
-  can be difficult to work with in an interactive environment. Use --experimental-repl-await
-  to make things a bit easier:
-
-  $ NODE_OPTIONS=--experimental-repl-await sfdx repl:repl -u me@example.com
-  me@example.com> (await $conn.identity()).username
-  'me@example.com'
-```
-
-_See code: [src/commands/repl/repl.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.3.0/src/commands/repl/repl.ts)_
-
-## `@mikeburr/sfdx-repl repl:script [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
-
-runs a script using the SFDX REPL
+Say hello either to the world or someone you know.
 
 ```
 USAGE
-  $ @mikeburr/sfdx-repl repl:script [-v <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
-  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+  $ sf hello world [--json] [-n <value>]
 
-ARGUMENTS
-  SCRIPT  filename of script to run
+FLAGS
+  -n, --name=<value>  [default: World] The name of the person you'd like to say hello to.
 
-OPTIONS
-  -u, --targetusername=targetusername                                               username or alias for the target
-                                                                                    org; overrides default target org
+GLOBAL FLAGS
+  --json  Format output as json.
 
-  -v, --targetdevhubusername=targetdevhubusername                                   username or alias for the dev hub
-                                                                                    org; overrides default dev hub org
+DESCRIPTION
+  Say hello either to the world or someone you know.
 
-  --apiversion=apiversion                                                           override the api version used for
-                                                                                    api requests made by this command
-
-  --json                                                                            format output as json
-
-  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
-                                                                                    this command invocation
+  Say hello either to the world or someone you know.
 
 EXAMPLES
-  $ cat example.sfdx
-  #!/usr/bin/env sfdx repl:script
+  Say hello to the world:
 
-  let me = await $conn.identity();
-  $cmd.ux.log(me.username + ' ran the example!');
+    $ sf hello world
 
-  $ ./example.sfdx --targetusername me@example.com
-  me@example.com ran the example!
+  Say hello to someone you know:
+
+    $ sf hello world --name Astro
 ```
 
-_See code: [src/commands/repl/script.ts](https://github.com/mburr-salesforce/sfdx-repl/blob/v0.3.0/src/commands/repl/script.ts)_
 <!-- commandsstop -->
-<!-- debugging-your-plugin -->
-# Debugging your plugin
-We recommend using the Visual Studio Code (VS Code) IDE for your plugin development. Included in the `.vscode` directory of this plugin is a `launch.json` config file, which allows you to attach a debugger to the node process when running your commands.
-
-To debug the `hello:org` command: 
-1. Start the inspector
-  
-If you linked your plugin to the sfdx cli, call your command with the `dev-suspend` switch: 
-```sh-session
-$ sfdx hello:org -u myOrg@example.com --dev-suspend
-```
-  
-Alternatively, to call your command using the `bin/run` script, set the `NODE_OPTIONS` environment variable to `--inspect-brk` when starting the debugger:
-```sh-session
-$ NODE_OPTIONS=--inspect-brk bin/run hello:org -u myOrg@example.com
-```
-
-2. Set some breakpoints in your command code
-3. Click on the Debug icon in the Activity Bar on the side of VS Code to open up the Debug view.
-4. In the upper left hand corner of VS Code, verify that the "Attach to Remote" launch configuration has been chosen.
-5. Hit the green play button to the left of the "Attach to Remote" launch configuration window. The debugger should now be suspended on the first line of the program. 
-6. Hit the green play button at the top middle of VS Code (this play button will be to the right of the play button that you clicked in step #5).
-<br><img src=".images/vscodeScreenshot.png" width="480" height="278"><br>
-Congrats, you are debugging!

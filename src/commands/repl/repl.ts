@@ -1,78 +1,68 @@
-import { SfdxCommand, core, flags } from '@salesforce/command';
+/*
+ * Copyright (c) 2021, salesforce.com, inc.
+ * All rights reserved.
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 
-// initialize Messages with the current plugin directory
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@mikeburr/sfdx-repl', 'repl');
+import { REPLServer } from 'repl';
+import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-export default class Repl extends SfdxCommand {
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.loadMessages('@mikeburr/sfdx-repl', 'repl.repl');
 
-  public static description = messages.getMessage('commandDescription');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ReplReplResult = any;
 
-  public static examples = [
-    `$ sfdx repl:repl --targetusername me@example.com
-me@example.com> Math.sqrt(289)
-17
-me@example.com> $conn.identity().then(id => console.log('*** you are logged into Salesforce as: ' + id.username))
-Promise { _40: 0, _65: 0, _55: null, _72: null }
-me@example.com> *** you are logged into Salesforce as: me@example.com
-`,
-    `$ sfdx repl:repl -e "1 + 2"
-3
-`,
-    `Note that many interactions with Salesforce will return JavaScript Promises, which
-can be difficult to work with in an interactive environment. Use --experimental-repl-await
-to make things a bit easier:
-`,
-    `$ NODE_OPTIONS=--experimental-repl-await sfdx repl:repl -u me@example.com
-me@example.com> (await $conn.identity()).username
-'me@example.com'
-`
-  ];
+export default class Repl extends SfCommand<ReplReplResult> {
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-  protected static supportsUsername = true;
-  protected static supportsDevhubUsername = true;
-
-  protected static flagsConfig = {
-    execute: flags.string({
+  public static readonly flags = {
+    execute: Flags.string({
+      summary: messages.getMessage('flags.execute.summary'),
+      description: messages.getMessage('flags.execute.description'),
       char: 'e',
-      description: messages.getMessage('eDescription'),
     }),
-    help: flags.help({})
-  }
 
+    'target-org': Flags.optionalOrg({
+      summary: messages.getMessage('flags.targetorg.summary'),
+      description: messages.getMessage('flags.targetorg.description'),
+    }),
+  };
 
-  public async run(): Promise<any> { // tslint:disable-line:no-any
+  public async run(): Promise<ReplReplResult> {
+    const { flags } = await this.parse(Repl);
+    const org = flags['target-org'];
+    const conn = org?.getConnection(undefined);
 
-    const repl = require('repl');
-    let replServer;
-
+    const repl = await import('repl');
+    let replServer: REPLServer;
 
     // execute any commands supplied with -e flag
-    if (this.flags.execute) {
-      const { Readable } = require('stream');
+    if (flags.execute) {
+      const { Readable } = await import('stream');
       const s = new Readable();
-      s.push(this.flags.execute);
+      s.push(flags.execute);
       s.push(null);
 
-      const { stdout } = require('process');
+      const { stdout } = await import('process');
       replServer = repl.start({ prompt: '', input: s, output: stdout, terminal: false });
     }
 
     // no commands supplied, start interactive mode
-    else {  
-      const username = this.org ? this.org.getUsername() : messages.getMessage("notConnectedPrompt");
+    else {
+      const username = conn?.getUsername() ?? messages.getMessage('notConnectedPrompt');
       replServer = repl.start({ prompt: `${username}> ` });
     }
 
-
-    // some shortcuts
     replServer.context.$cmd = this;
-    replServer.context.$conn = this.org && this.org.getConnection();
-    replServer.context.$org = this.org;
+    replServer.context.$conn = conn;
+    replServer.context.$org = org;
 
-
-    // keep the command running until the replServer exits
-    return new Promise<any>((resolve) => {
+    return new Promise<ReplReplResult>((resolve) => {
       replServer.on('exit', () => resolve(replServer.context._));
     });
   }

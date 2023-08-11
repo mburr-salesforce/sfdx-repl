@@ -1,83 +1,73 @@
-import { SfdxCommand, core } from '@salesforce/command';
+/*
+ * Copyright (c) 2023, salesforce.com, inc.
+ * All rights reserved.
+ * Licensed under the BSD 3-Clause license.
+ * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
+import * as fs from 'fs';
+import { Args } from '@oclif/core';
+import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-// initialize Messages with the current plugin directory
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages('@mikeburr/sfdx-repl', 'script');
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.loadMessages('@mikeburr/sfdx-repl', 'repl.script');
 
-const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ReplScriptResult = any;
 
-export default class Script extends SfdxCommand {
+type AsyncFunctionConstructor = {
+  // eslint-disable-next-line @typescript-eslint/prefer-function-type
+  new (functionBody: string): () => Promise<unknown>;
+};
 
-  public static description = messages.getMessage('commandDescription');
-  public static examples = [
-    `$ cat example.sfdx
-#!/usr/bin/env sfdx repl:script
+// eslint-disable-next-line
+const AsyncFunction: AsyncFunctionConstructor = Object.getPrototypeOf(async function () {}).constructor;
 
-let me = await $conn.identity();
-$cmd.ux.log(me.username + ' ran the example!');
-`,
-    `$ ./example.sfdx --targetusername me@example.com
-me@example.com ran the example!
-`
-  ];
+export default class ReplScript extends SfCommand<ReplScriptResult> {
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
 
-
-  // needed so oclif can do variable length command line argument list
-  static strict = false;
-
-  // support connections to regular orgs & dev hubs
-  protected static supportsUsername = true;
-  protected static supportsDevhubUsername = true;
-
-  // must have script name, but strict=false above will allow additional args
-  static args = [
-    {
-      name: 'script',
+  public static readonly args = {
+    script: Args.file({
       required: true,
-      description: messages.getMessage('scriptDescription')
-    }
-  ];
+      description: messages.getMessage('args.script.summary'),
+    }),
+  };
 
+  public static readonly flags = {
+    'target-org': Flags.optionalOrg({
+      summary: messages.getMessage('flags.targetorg.summary'),
+      description: messages.getMessage('flags.targetorg.description'),
+      char: 'o',
+    }),
+  };
 
-  public async run(): Promise<any> { // tslint:disable-line:no-any
+  // allow vararg parsing
+  public static readonly strict = false;
 
-    // sfdx doesn't do variable length arguments so we drop back to oclif's parsing
-    const { args, argv } = this.parse(Script);
+  public async run(): Promise<ReplScriptResult> {
+    const { args, argv, flags } = await this.parse(ReplScript);
 
-    // temporarily swap sfdx's argv for the script's; note that very bad things happen if
-    // don't swap these back before we return
-    // TODO - would it make more sense to pass the args to the script as function parameters?
-    let originalArgv = process.argv;
-    process.argv = argv;
+    return new Promise((resolve) => {
+      fs.readFile(args.script, (err, data) => {
+        // strip off the shebang line since it's not valid javascript
+        const scriptString = data.toString().replace(/^#![^\n]*\n/, '');
 
-    try {
-      return new Promise((resolve) => {
-        fs.readFile(args.script, (err, data) => {
-          // strip off the shebang line since it's not valid javascript
-          data = data.toString().replace(/^#![^\n]*\n/, '');
+        // build a new async function with the contents of the script
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        const runme = new AsyncFunction(scriptString);
 
-          // build a new async function with the contents of the script; we pass in
-          // various bits of context so the script can access them the same way as repl
-          const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
-          const runme = new AsyncFunction(data);
+        // attach relevant globals to the global object so they are available
+        // throughout entirety of script execution
+        global['require'] = require;
+        (global as any)['$cmd'] = this; // eslint-disable-line
+        const org = ((global as any)['$org'] = flags['target-org']); // eslint-disable-line
+        (global as any)['$conn'] = org?.getConnection(); // eslint-disable-line
+        (global as any)['$argv'] = argv; // eslint-disable-line
 
-          // attach relevant globals to the global object so they are available
-          // throughout entirety of script execution
-          global['require'] = require;
-          global['$cmd'] = this;
-          global['$org'] = this.org;
-          global['$conn'] = this.org && this.org.getConnection();
-
-          // return a Promise that resolves to the script's return value
-          resolve(runme());
-        });
+        resolve(runme());
       });
-    }
-
-    finally {
-      process.argv = originalArgv;
-    }
+    });
   }
 }
-
-

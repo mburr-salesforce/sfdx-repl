@@ -1,0 +1,10 @@
+[
+  {
+    "command": "hello:world",
+    "plugin": "@salesforce/plugin-foo",
+    "flags": ["json", "name"],
+    "alias": [],
+    "flagChars": ["n"],
+    "flagAliases": []
+  }
+]

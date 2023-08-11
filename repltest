@@ -1,0 +1,5 @@
+#!./bin/dev repl:script
+
+console.log('repltest started');
+$conn.identity().then(identity => console.log(identity.username));
+console.log(`$argv: ${$argv}`);

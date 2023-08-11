@@ -1,4 +1,0 @@
-{
-  "commandDescription": "runs a script using the SFDX REPL",
-  "scriptDescription": "filename of script to run"
-}
