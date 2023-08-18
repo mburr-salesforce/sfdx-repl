@@ -76,9 +76,6 @@
       "@salesforce/plugin-command-reference"
     ],
     "topics": {
-      "hello": {
-        "description": "Commands to say hello."
-      },
       "repl": {
         "description": "description for repl"
       }

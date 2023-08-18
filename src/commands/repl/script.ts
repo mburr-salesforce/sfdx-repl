@@ -12,8 +12,7 @@ import { Messages } from '@salesforce/core';
 Messages.importMessagesDirectory(__dirname);
 const messages = Messages.loadMessages('@mikeburr/sfdx-repl', 'repl.script');
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ReplScriptResult = any;
+export type ReplScriptResult = unknown;
 
 type AsyncFunctionConstructor = {
   // eslint-disable-next-line @typescript-eslint/prefer-function-type
@@ -49,25 +48,31 @@ export default class ReplScript extends SfCommand<ReplScriptResult> {
   public async run(): Promise<ReplScriptResult> {
     const { args, argv, flags } = await this.parse(ReplScript);
 
-    return new Promise((resolve) => {
-      fs.readFile(args.script, (err, data) => {
-        // strip off the shebang line since it's not valid javascript
-        const scriptString = data.toString().replace(/^#![^\n]*\n/, '');
+    return (
+      fs.promises
+        .readFile(args.script)
+        .then(async (data) => {
+          // strip off the shebang line since it's not valid javascript
+          const scriptString = data.toString().replace(/^#![^\n]*\n/, '');
 
-        // build a new async function with the contents of the script
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        const runme = new AsyncFunction(scriptString);
+          // build a new async function with the contents of the script; use an
+          // async function so the script can use await
+          const runme = new AsyncFunction(scriptString);
 
-        // attach relevant globals to the global object so they are available
-        // throughout entirety of script execution
-        global['require'] = require;
-        (global as any)['$cmd'] = this; // eslint-disable-line
-        const org = ((global as any)['$org'] = flags['target-org']); // eslint-disable-line
-        (global as any)['$conn'] = org?.getConnection(); // eslint-disable-line
-        (global as any)['$argv'] = argv; // eslint-disable-line
+          // attach relevant globals to the global object so they are available
+          // throughout entirety of script execution
+          global['require'] = require;
+          (global as any)['$cmd'] = this; // eslint-disable-line
+          const org = ((global as any)['$org'] = flags['target-org']); // eslint-disable-line
+          (global as any)['$conn'] = org?.getConnection(); // eslint-disable-line
+          (global as any)['$argv'] = argv; // eslint-disable-line
 
-        resolve(runme());
-      });
-    });
+          return runme();
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .catch((error: any) => {
+          this.error(error instanceof Error ? error : new Error(JSON.stringify(error)), { exit: 1 });
+        })
+    );
   }
 }
