@@ -1,6 +1,6 @@
 {
-  "name": "@mikeburr/sfdx-repl",
-  "description": "a simple REPL for the Salesforce CLI (Salesforce DX)",
+  "name": "@mikeburr/sf-repl",
+  "description": "a simple REPL for the Salesforce CLI",
   "version": "1.0.0",
   "author": "Mike Burr @mikeburr",
   "bugs": "https://github.com/mburr-salesforce/sfdx-repl/issues",

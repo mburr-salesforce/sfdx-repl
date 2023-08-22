@@ -10,7 +10,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@mikeburr/sfdx-repl', 'repl.script');
+const messages = Messages.loadMessages('@mikeburr/sf-repl', 'repl.script');
 
 export type ReplScriptResult = unknown;
 

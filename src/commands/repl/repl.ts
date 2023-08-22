@@ -10,7 +10,7 @@ import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
 import { Messages } from '@salesforce/core';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('@mikeburr/sfdx-repl', 'repl.repl');
+const messages = Messages.loadMessages('@mikeburr/sf-repl', 'repl.repl');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ReplReplResult = any;
